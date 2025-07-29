@@ -1,0 +1,215 @@
+basePath: /
+definitions:
+  main.APIResponse:
+    properties:
+      data: {}
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  main.CreateTaskRequest:
+    properties:
+      description:
+        type: string
+      title:
+        type: string
+    type: object
+  main.Task:
+    properties:
+      completed:
+        type: boolean
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      title:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  main.UpdateTaskRequest:
+    properties:
+      completed:
+        type: boolean
+      description:
+        type: string
+      title:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: contato@paulo.app.br
+    name: Paulo Henrique
+  description: API para gerenciar tarefas (CRUD).
+  title: To-Do List API
+  version: "1.0"
+paths:
+  /tasks:
+    get:
+      description: Retorna todas as tarefas cadastradas
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/main.APIResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/main.Task'
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/main.APIResponse'
+      summary: Lista todas as tarefas
+      tags:
+      - tasks
+    post:
+      consumes:
+      - application/json
+      description: Cria uma nova tarefa com título e descrição. O campo 'title' é
+        obrigatório e único.
+      parameters:
+      - description: Dados da tarefa
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/main.CreateTaskRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/main.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/main.Task'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/main.APIResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/main.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/main.APIResponse'
+      summary: Cria uma nova tarefa
+      tags:
+      - tasks
+  /tasks/{id}:
+    delete:
+      description: Deleta uma tarefa pelo ID
+      parameters:
+      - description: ID da tarefa
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.APIResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/main.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/main.APIResponse'
+      summary: Remove uma tarefa
+      tags:
+      - tasks
+    get:
+      description: Retorna uma tarefa específica pelo ID
+      parameters:
+      - description: ID da tarefa
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/main.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/main.Task'
+              type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/main.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/main.APIResponse'
+      summary: Busca uma tarefa por ID
+      tags:
+      - tasks
+    put:
+      consumes:
+      - application/json
+      description: Atualiza os dados de uma tarefa existente
+      parameters:
+      - description: ID da tarefa
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Dados para atualização
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/main.UpdateTaskRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/main.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/main.Task'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/main.APIResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/main.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/main.APIResponse'
+      summary: Atualiza uma tarefa
+      tags:
+      - tasks
+swagger: "2.0"
